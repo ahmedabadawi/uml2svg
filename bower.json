@@ -1,0 +1,25 @@
+{
+  "name": "uml2svg.js",
+  "version": "0.0.1",
+  "authors": [
+    "Ahmed Badawi <ahmedabadawi@gmail.com>"
+  ],
+  "description": "Generate SVG for UML diagrams, Sequence Diagrams, Class Diagrams, ... Pure JS and HTML5 no external dependencies",
+  "main": "",
+  "moduleType": [],
+  "keywords": [
+    "JavaScript",
+    "HTML5",
+    "SVG",
+    "UML"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
