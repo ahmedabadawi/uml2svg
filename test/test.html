@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE-edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="favicon.ico">
+
+        <title>HTML - UML2SVG Test Page</title>
+    </head>
+    <body>
+        <div>
+            <select id="diagramType">
+                <option value="sequencediagram">Sequence Diagram</option>
+            </select><br/>
+            <textarea id="diagramModel" rows="10" cols="80">
+                {
+                    "id": "diagram1",
+                    "actors": [
+                        {
+                            "order": "1",
+                            "title": "User",
+                            "stereotype": "Actor"
+                        },
+                        {
+                            "order": "2",
+                            "title": "UI"
+                        },
+                        {
+                            "order": "4",
+                            "title": "DB"
+                        },
+                        {
+                            "order": "3",
+                            "title": "Cache"
+                        },
+                        {
+                            "order": "5",
+                            "title": "Payment"
+                        },
+                        {
+                            "order": "6",
+                            "title": "Shipping"
+                        }
+                    ],
+                    "messages": [
+                        {
+                            "order": "1",
+                            "message": "Place Order",
+                            "callerActor": "User",
+                            "caleeActor": "UI"
+                        },
+                        {
+                            "order": "2",
+                            "message": "Confirmation",
+                            "callerActor": "UI",
+                            "caleeActor": "User",
+                            "type": "response"
+                        }
+                    ]
+                }
+            </textarea>
+            <br/>
+    
+            <button id="render">Render</button>    
+        </div>
+        <hr/>
+        <div id="output">
+        </div>
+
+    </body>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+    <script src="../dist/uml2svg.js"></script> 
+    
+    <script>
+        $(function() {
+            console.log("Document Ready");
+            $("#render").on("click", function() {
+                var diagramType = $("#diagramType").val();
+                var diagramModel = $("#diagramModel").val();
+
+                console.log(diagramType);
+                console.log(diagramModel);
+                diagramModel = JSON.parse(diagramModel); 
+                var u2s = new uml2svg.Uml2svg(diagramType, { width:640,
+                    height:300 });
+                var svg = u2s.render(diagramModel);
+                $("#output").html(svg);
+            });
+        });
+    </script>
+</html>
