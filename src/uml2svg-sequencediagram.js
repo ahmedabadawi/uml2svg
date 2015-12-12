@@ -8,6 +8,7 @@ uml2svg.renderer = uml2svg.renderer || {};
 uml2svg.renderer.SequenceDiagram = function(parent, options) {
     var that = this;
     this.options = options;
+    this.parent = parent;
 
     this.render = function(diagramModel) {
         if(that.init(diagramModel)) {
@@ -15,8 +16,8 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
             var actorElements = that.renderActors(diagramModel);
 
             var diagramElements = 
-                that.renderSvgElement(diagramModel.id, 
-                                     that.renderDefs() + 
+                that.parent.renderSvg(diagramModel.id, 
+                                     that.renderDefs(),  
                                      that.renderActors(diagramModel));
             
             return diagramElements;
@@ -39,27 +40,10 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
         return true;
     };
     
-    this.renderSvgElement = function(id, content) {
-        var svgElement = 
-            '<svg ' +
-            'id="' + id + '"' + 
-            'width="' + that.options.width + '" height="' + that.options.height + '">' +
-            content +
-            '</svg>';
-        return svgElement;
-    };
-
     this.renderDefs = function() {
-        var arrowMarker = 
-            '<marker id="arrow" markerWidth="10" markerHeight="10" refx="0" refy="3" orient = "auto">'+
-            '<path d="M0,0 L0,6 L9,3 z" fill="black" />' +
-            '</marker>';
-
-        var defs = 
-            '<defs>'+
-            arrowMarker +
-            '</defs>';
-
+        var arrowMarker = that.parent.renderArrowMarker();
+        var defs = that.parent.renderDefs(arrowMarker);
+        
         return defs;
     };
 
@@ -88,16 +72,12 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
         var lowerY = that.options.height - offsetY - height;
 
         // Render actor upper box
-        var actorUpperBox = 
-            '<rect x="' + x + '" y="' + upperY + '"' +
-            ' width="' + width + '" height ="' + height +'"' +
-            ' style="fill:white; stroke:black;stroke-width:2" />';
+        var actorUpperBox =
+            that.parent.renderRect(x, upperY, width, height);
         
         // Render actor lower box
         var actorLowerBox = 
-            '<rect x="' + x + '" y="' + lowerY + '"' +
-            ' width="' + width + '" height ="' + height +'"' +
-            ' style="fill:white; stroke:black;stroke-width:2" />';
+            that.parent.renderRect(x, lowerY, width, height);
         
         // Render actor lifetime line
         var lifetimeLineX = offsetX;
@@ -105,25 +85,18 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
         var lifetimeLineYEnd = lowerY;
 
         var actorLifetimeLine = 
-            '<line x1="'+ lifetimeLineX + '" y1="' + lifetimeLineYStart + '"' +
-            ' x2="' + lifetimeLineX + '" y2 ="' + lifetimeLineYEnd + '"' +
-            ' style="stroke:black;stroke-width:2;stroke-dasharray:5,5" />';
-
+            that.parent.renderDashedVerticalLine(
+                lifetimeLineX, lifetimeLineYStart, lifetimeLineYEnd);
+        
         // Render actor title
         var actorTitleX = x;
         var actorUpperTitleY = upperY + (height / 2); 
         var actorLowerTitleY = lowerY + (height / 2);
         var actorUpperTitle = 
-            '<text fill="black" font-size-"12" font-family="Verdana"' + 
-            ' x="' + actorTitleX + '" y="' + actorUpperTitleY + '">' + 
-            actor.title + 
-            '</text>';
+            that.parent.renderText(actorTitleX, actorUpperTitleY, actor.title);
         
         var actorLowerTitle = 
-            '<text fill="black" font-size-"12" font-family="Verdana"' + 
-            ' x="' + actorTitleX + '" y="' + actorLowerTitleY + '">' + 
-            actor.title + 
-            '</text>';
+            that.parent.renderText(actorTitleX, actorLowerTitleY, actor.title);
         
         return actorUpperBox +
             actorUpperTitle +
