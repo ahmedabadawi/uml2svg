@@ -5,11 +5,11 @@ uml2svg.renderer = uml2svg.renderer || {};
 // sequencediagram class is a singleton defined on the namespace of
 // uml2svg.renderer to be used by the Uml2svg class proxy to generate the SVG
 // element 
-uml2svg.renderer.sequencediagram = function() {
+uml2svg.renderer.SequenceDiagram = function(parent, options) {
     var that = this;
+    this.options = options;
 
-    this.render = function(diagramModel, options) {
-        that.options = options;
+    this.render = function(diagramModel) {
         if(that.init(diagramModel)) {
 
             var actorElements = that.renderActors(diagramModel);
@@ -136,5 +136,5 @@ uml2svg.renderer.sequencediagram = function() {
     return {
         render: this.render
     };
-}();
+};
 

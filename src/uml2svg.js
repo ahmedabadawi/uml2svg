@@ -6,12 +6,12 @@ var uml2svg = uml2svg || {};        // Namespace
 // renderer
 uml2svg.Uml2svg = function(diagramType, options) {
     this.options = options;
-    this.renderer = uml2svg.renderer[diagramType];
+    this.renderer = new uml2svg.renderer[diagramType](this, options);
     if(!this.renderer) {
         throw "Undefined Diagram Type";
     }
 };
 
 uml2svg.Uml2svg.prototype.render = function(diagramModel) {
-    return this.renderer.render(diagramModel, this.options);
+    return this.renderer.render(diagramModel);
 };
