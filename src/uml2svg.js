@@ -13,6 +13,8 @@ uml2svg.Uml2svg = function(diagramType, options) {
         if(!o.color) { o.color = 'black'; }
         if(!o.fillColor) { o.fillColor = 'white'; }
         if(!o.lineWidth) { o.lineWidth = 2; }
+        if(!o.arrowHeadWidth) { o.arrowHeadWidth = 18; }
+        if(!o.arrowHeadHeight) { o.arrowHeadHeight = 12; }
     })(this.options);
 
     this.renderer = new uml2svg.renderer[diagramType](this, options);
@@ -46,9 +48,23 @@ uml2svg.Uml2svg.prototype.renderDefs = function(defs) {
 };
 
 uml2svg.Uml2svg.prototype.renderArrowMarker = function() {
+    var markerWidth = this.options.arrowHeadWidth / 2,
+        markerHeight = this.options.arrowHeadHeight / 2,
+        refx = markerWidth,
+        refy = markerHeight / 2,
+        point1 = { x: 0, y: 0 },
+        point2 = { x: 0, y: markerHeight },
+        point3 = { x: markerWidth, y: markerHeight / 2 };
+
     var arrowMarker = 
-        '<marker id="arrow" markerWidth="10" markerHeight="10" refx="0" refy="3" orient = "auto">'+
-        '<path d="M0,0 L0,6 L9,' + this.options.lineWidth + ' z" ' + 
+        '<marker id="arrow" '+
+        'markerWidth="' + markerWidth + '"' +
+        'markerHeight="' + markerHeight + '" ' +
+        ' refx="' + refx + '" refy="' + refy + '" orient = "auto">'+
+        '<path d="' + 
+        'M' + point1.x + ',' + point1.y +' ' +
+        'L' + point2.x + ',' + point2.y +' ' +
+        'L' + point3.x + ',' + point3.y + '  Z" ' + 
         'fill="' + this.options.Color + '" />' +
         '</marker>';
 

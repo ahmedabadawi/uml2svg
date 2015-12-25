@@ -164,11 +164,6 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
         // Render the arrow
         var arrowStartX = callerActor.box.lifetimeLineX,
             arrowEndX = calleeActor.box.lifetimeLineX;
-        if(arrowStartX < arrowEndX) {
-            arrowEndX -= 13; // TODO: Externalize in configurable options 
-        } else {
-            arrowEndX += 13;
-        }
 
         var arrowElement =
             that.parent.renderArrow(
@@ -183,8 +178,8 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
             calleeActor.box.lifetimeLineX;
         var textY = 
             offsetY;
-        textX += 10;        // TODO: Externalize in configurable options 
-        textY -= 5;         // TODO: Externalize in configurable options
+        textX += 10;        // TODO: Fix text centering 
+        textY -= 5;         // TODO: Fix text centering
         var textElement =
             that.parent.renderTextXY(
                 textX, textY, message.message);
