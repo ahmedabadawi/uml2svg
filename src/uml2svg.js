@@ -65,12 +65,15 @@ uml2svg.Uml2svg.prototype.renderRect = function(x, y, width, height) {
     return rectElement;
 };
 
-uml2svg.Uml2svg.prototype.renderText = function(x, y, text) {
+uml2svg.Uml2svg.prototype.renderText = function(x, y, width, height, text) {
+    var textX, textY;
+    textX = x + 5;
+    textY = y + (height / 2);
     var textElement = 
         '<text fill="' + this.options.color + 
         '" font-size="' + this.options.fontSize + 
         '" font-family="' + this.options.fontFamily + '"' + 
-        ' x="' + x + '" y="' + y + '">' + 
+        ' x="' + textX + '" y="' + textY + '">' + 
          text + 
         '</text>';
     return textElement;

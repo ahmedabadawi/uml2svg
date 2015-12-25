@@ -89,14 +89,11 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
                 lifetimeLineX, lifetimeLineYStart, lifetimeLineYEnd);
         
         // Render actor title
-        var actorTitleX = x;
-        var actorUpperTitleY = upperY + (height / 2); 
-        var actorLowerTitleY = lowerY + (height / 2);
         var actorUpperTitle = 
-            that.parent.renderText(actorTitleX, actorUpperTitleY, actor.title);
+            that.parent.renderText(x, upperY, width, height, actor.title);
         
         var actorLowerTitle = 
-            that.parent.renderText(actorTitleX, actorLowerTitleY, actor.title);
+            that.parent.renderText(x, lowerY, width, height, actor.title);
         
         return actorUpperBox +
             actorUpperTitle +
