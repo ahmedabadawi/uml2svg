@@ -5,7 +5,16 @@ var uml2svg = uml2svg || {};        // Namespace
 // options define the width and height of the target svg to be used by the
 // renderer
 uml2svg.Uml2svg = function(diagramType, options) {
-    this.options = options;
+    this.options = options || { };
+    // Set the default options
+    (function(o) {
+        if(!o.fontSize) { o.fontSize = 12; }
+        if(!o.fontFamily) { o.fontFamily = 'Verdana'; }
+        if(!o.color) { o.color = 'black'; }
+        if(!o.fillColor) { o.fillColor = 'white'; }
+        if(!o.lineWidth) { o.lineWidth = 2; }
+    })(this.options);
+
     this.renderer = new uml2svg.renderer[diagramType](this, options);
     if(!this.renderer) {
         throw "Undefined Diagram Type";
@@ -39,7 +48,8 @@ uml2svg.Uml2svg.prototype.renderDefs = function(defs) {
 uml2svg.Uml2svg.prototype.renderArrowMarker = function() {
     var arrowMarker = 
         '<marker id="arrow" markerWidth="10" markerHeight="10" refx="0" refy="3" orient = "auto">'+
-        '<path d="M0,0 L0,6 L9,3 z" fill="black" />' +
+        '<path d="M0,0 L0,6 L9,' + this.options.lineWidth + ' z" ' + 
+        'fill="' + this.options.Color + '" />' +
         '</marker>';
 
     return arrowMarker;
@@ -49,13 +59,17 @@ uml2svg.Uml2svg.prototype.renderRect = function(x, y, width, height) {
     var rectElement = 
         '<rect x="' + x + '" y="' + y + '"' +
             ' width="' + width + '" height ="' + height +'"' +
-            ' style="fill:white; stroke:black;stroke-width:2" />';
+            ' style="fill:' + this.options.fillColor + 
+            '; stroke:' + this.options.color + 
+            ';stroke-width:' + this.options.lineWidth + '" />';
     return rectElement;
 };
 
 uml2svg.Uml2svg.prototype.renderText = function(x, y, text) {
     var textElement = 
-        '<text fill="black" font-size-"12" font-family="Verdana"' + 
+        '<text fill="' + this.options.color + 
+        '" font-size="' + this.options.fontSize + 
+        '" font-family="' + this.options.fontFamily + '"' + 
         ' x="' + x + '" y="' + y + '">' + 
          text + 
         '</text>';
@@ -66,6 +80,8 @@ uml2svg.Uml2svg.prototype.renderDashedVerticalLine = function(x, yStart, yEnd) {
     var lineElement = 
         '<line x1="'+ x + '" y1="' + yStart + '"' +
         ' x2="' + x + '" y2 ="' + yEnd + '"' +
-        ' style="stroke:black;stroke-width:2;stroke-dasharray:5,5" />';
+        ' style="stroke:' + this.options.color + 
+        ';stroke-width:' + this.options.lineWidth + 
+        ';stroke-dasharray:5,5" />';
     return lineElement;
 };
