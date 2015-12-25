@@ -50,13 +50,51 @@
                             "order": "1",
                             "message": "Place Order",
                             "callerActor": "User",
-                            "caleeActor": "UI"
+                            "calleeActor": "UI"
                         },
                         {
-                            "order": "2",
+                            "order": "3",
+                            "message": "Check",
+                            "callerActor": "UI",
+                            "calleeActor": "Cache"
+                        },
+                        {
+                            "order": "4",
+                            "message": "Process Payment",
+                            "callerActor": "UI",
+                            "calleeActor": "Payment"
+                        },
+                        {
+                            "order": "5",
+                            "message": "Authorization",
+                            "callerActor": "UI",
+                            "calleeActor": "Payment",
+                            "type": "response"
+                        },
+                        {
+                            "order": "6",
+                            "message": "Schedule Shipment",
+                            "callerActor": "UI",
+                            "calleeActor": "Shipping"
+                        },
+                        {
+                            "order": "7",
+                            "message": "Delivery Time",
+                            "callerActor": "Shipping",
+                            "calleeActor": "UI",
+                            "type": "response"
+                        },
+                        {
+                            "order": "8",
+                            "message": "Save Order",
+                            "callerActor": "UI",
+                            "calleeActor": "DB"
+                        },
+                        {
+                            "order": "9",
                             "message": "Confirmation",
                             "callerActor": "UI",
-                            "caleeActor": "User",
+                            "calleeActor": "User",
                             "type": "response"
                         }
                     ]

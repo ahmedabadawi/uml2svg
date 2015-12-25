@@ -18,7 +18,8 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
             var diagramElements = 
                 that.parent.renderSvg(diagramModel.id, 
                                      that.renderDefs(),  
-                                     that.renderActors(diagramModel));
+                                     that.renderActors(diagramModel) + 
+                                     that.renderMessages(diagramModel));
             
             return diagramElements;
         }
@@ -49,11 +50,11 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
 
     this.renderActors = function(diagramModel) {
         var actorElements;
-        var actorWidth = 60;
-        var actorHeight = 40;
+        var actorWidth = 60;    // TODO: Externalize in configurable options 
+        var actorHeight = 40;   // TODO: Externalize in configurable options 
         var offsetY = 0;
-        var offsetX = 50;
-        var gapX = 100;
+        var offsetX = 50;      // TODO: Externalize in configurable options 
+        var gapX = 100;    // TODO: Externalize in configurable options 
 
         for(var i = 0; i < diagramModel.actors.length; i++) {
             actorElements  += 
@@ -95,6 +96,14 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
         var actorLowerTitle = 
             that.parent.renderText(x, lowerY, width, height, actor.title);
         
+        // Attach the bounding box to the actor
+        actor.box = {
+            x: x,
+            upperY: upperY,
+            lowerY: lowerY,
+            lifetimeLineX: lifetimeLineX
+        };
+
         return actorUpperBox +
             actorUpperTitle +
             actorLowerBox + 
@@ -102,7 +111,71 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
             actorLifetimeLine;
 
     };
+    
+    this.renderMessages = function(diagramModel) {
+        var messageElements;
+        var offsetY = 60;  // TODO: Externalize in configurable options 
+        var gapY = 25;     // TODO: Externalize in configurable options
 
+        for(var i = 0; i < diagramModel.messages.length; i++) {
+            messageElements  += 
+                that.renderMessage(diagramModel.messages[i],
+                                   diagramModel.actors,
+                                   offsetY);
+            offsetY += gapY;
+            if(offsetY > (that.options.height - 60)) {
+                //TODO: Handle that the height is not enough
+            }
+        }
+
+        return messageElements;
+    };
+    
+    this.findActorByTitle = function(title, actors) {
+        for(var i = 0; i < actors.length; i++) {
+            if(actors[i].title === title) {
+                return actors[i];
+            }
+        }
+        return null;
+    };
+
+    this.renderMessage = function(message, actors, offsetY) {
+        var callerActor = this.findActorByTitle(message.callerActor, actors);
+        var calleeActor = this.findActorByTitle(message.calleeActor, actors);
+        
+        // Render the arrow
+        var arrowStartX = callerActor.box.lifetimeLineX,
+            arrowEndX = calleeActor.box.lifetimeLineX;
+        if(arrowStartX < arrowEndX) {
+            arrowEndX -= 13; // TODO: Externalize in configurable options 
+        } else {
+            arrowEndX += 13;
+        }
+
+        var arrowElement =
+            that.parent.renderArrow(
+                arrowStartX, offsetY, arrowEndX, offsetY,
+                (message.type === 'response'));
+        
+        // Render the message text
+        // TODO: Center the message text
+        var textX = 
+            (callerActor.box.lifetimeLineX < calleeActor.box.lifetimeLineX) ?
+            callerActor.box.lifetimeLineX :
+            calleeActor.box.lifetimeLineX;
+        var textY = 
+            offsetY;
+        textX += 10;        // TODO: Externalize in configurable options 
+        textY -= 5;         // TODO: Externalize in configurable options
+        var textElement =
+            that.parent.renderTextXY(
+                textX, textY, message.message);
+       
+        return arrowElement + 
+            textElement;
+    };
+    
     return {
         render: this.render
     };

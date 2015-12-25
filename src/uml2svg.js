@@ -69,11 +69,18 @@ uml2svg.Uml2svg.prototype.renderText = function(x, y, width, height, text) {
     var textX, textY;
     textX = x + 5;
     textY = y + (height / 2);
+    // TODO: Handle centering the text within the bounding box
+    var textElement = 
+        this.renderTextXY(textX, textY, text);
+    return textElement;
+};
+
+uml2svg.Uml2svg.prototype.renderTextXY = function(x, y ,text) {
     var textElement = 
         '<text fill="' + this.options.color + 
         '" font-size="' + this.options.fontSize + 
         '" font-family="' + this.options.fontFamily + '"' + 
-        ' x="' + textX + '" y="' + textY + '">' + 
+        ' x="' + x + '" y="' + y + '">' + 
          text + 
         '</text>';
     return textElement;
@@ -87,4 +94,16 @@ uml2svg.Uml2svg.prototype.renderDashedVerticalLine = function(x, yStart, yEnd) {
         ';stroke-width:' + this.options.lineWidth + 
         ';stroke-dasharray:5,5" />';
     return lineElement;
+};
+
+uml2svg.Uml2svg.prototype.renderArrow = function(x1, y1, x2, y2, dashed) {
+    var arrowElement =         
+        '<line x1="' + x1 + '" y1="' + y1 + 
+        '" x2="' + x2 + '" y2="' + y2 + '" ' +
+        'marker-end="url(#arrow)"' + 
+        'style="stroke:' + this.options.color + 
+        ';stroke-width:' + this.options.lineWidth + 
+        ((dashed)?';stroke-dasharray:5,5': '') +
+        '" />';
+    return arrowElement;
 };
