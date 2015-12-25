@@ -11,31 +11,33 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
     this.parent = parent;
 
     this.render = function(diagramModel) {
-        if(that.init(diagramModel)) {
+        that.diagramModel = diagramModel;
 
-            var actorElements = that.renderActors(diagramModel);
+        if(that.init()) {
+
+            var actorElements = that.renderActors();
 
             var diagramElements = 
                 that.parent.renderSvg(diagramModel.id, 
                                      that.renderDefs(),  
-                                     that.renderActors(diagramModel) + 
-                                     that.renderMessages(diagramModel));
+                                     that.renderActors() + 
+                                     that.renderMessages());
             
             return diagramElements;
         }
     };
 
-    this.init = function(diagramModel) {
-        if(that.validate(diagramModel)) {
-            diagramModel.actors.sort(function(a1, a2) { return a1.order - a2.order; });
-            diagramModel.messages.sort(function(m1, m2) {  return m1.order - m2.order; });
+    this.init = function() {
+        if(that.validate()) {
+            that.diagramModel.actors.sort(function(a1, a2) { return a1.order - a2.order; });
+            that.diagramModel.messages.sort(function(m1, m2) {  return m1.order - m2.order; });
             return true;
         }
 
         return false;
     };
     
-    this.validate = function(diagramModel) {
+    this.validate = function() {
         // TODO: validate the diagram model. No duplicate actors, No messages from
         // to unknown actors
         return true;
@@ -48,7 +50,7 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
         return defs;
     };
 
-    this.renderActors = function(diagramModel) {
+    this.renderActors = function() {
         var actorElements;
         var actorWidth = 60;    // TODO: Externalize in configurable options 
         var actorHeight = 40;   // TODO: Externalize in configurable options 
@@ -56,9 +58,9 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
         var offsetX = 50;      // TODO: Externalize in configurable options 
         var gapX = 100;    // TODO: Externalize in configurable options 
 
-        for(var i = 0; i < diagramModel.actors.length; i++) {
+        for(var i = 0; i < that.diagramModel.actors.length; i++) {
             actorElements  += 
-                that.renderActor(diagramModel.actors[i],
+                that.renderActor(that.diagramModel.actors[i],
                                actorWidth, actorHeight,
                                 offsetX, offsetY);
             offsetX += gapX;
@@ -112,15 +114,14 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
 
     };
     
-    this.renderMessages = function(diagramModel) {
+    this.renderMessages = function() {
         var messageElements;
         var offsetY = 60;  // TODO: Externalize in configurable options 
         var gapY = 25;     // TODO: Externalize in configurable options
 
-        for(var i = 0; i < diagramModel.messages.length; i++) {
+        for(var i = 0; i < that.diagramModel.messages.length; i++) {
             messageElements  += 
-                that.renderMessage(diagramModel.messages[i],
-                                   diagramModel.actors,
+                that.renderMessage(that.diagramModel.messages[i],
                                    offsetY);
             offsetY += gapY;
             if(offsetY > (that.options.height - 60)) {
@@ -131,18 +132,18 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
         return messageElements;
     };
     
-    this.findActorByTitle = function(title, actors) {
-        for(var i = 0; i < actors.length; i++) {
-            if(actors[i].title === title) {
-                return actors[i];
+    this.findActorByTitle = function(title) {
+        for(var i = 0; i < that.diagramModel.actors.length; i++) {
+            if(that.diagramModel.actors[i].title === title) {
+                return that.diagramModel.actors[i];
             }
         }
         return null;
     };
 
-    this.renderMessage = function(message, actors, offsetY) {
-        var callerActor = this.findActorByTitle(message.callerActor, actors);
-        var calleeActor = this.findActorByTitle(message.calleeActor, actors);
+    this.renderMessage = function(message, offsetY) {
+        var callerActor = this.findActorByTitle(message.callerActor);
+        var calleeActor = this.findActorByTitle(message.calleeActor);
         
         // Render the arrow
         var arrowStartX = callerActor.box.lifetimeLineX,
