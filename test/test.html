@@ -105,7 +105,7 @@
             <button id="render">Render</button>    
         </div>
         <hr/>
-        <div id="output">
+        <div id="output" style="height: 300; width: 640; overflow: scroll">
         </div>
 
     </body>
@@ -123,8 +123,19 @@
                 console.log(diagramType);
                 console.log(diagramModel);
                 diagramModel = JSON.parse(diagramModel); 
-                var u2s = new uml2svg.Uml2svg(diagramType, { width:640,
-                    height:300 });
+                var u2s = new uml2svg.Uml2svg(diagramType, 
+                    { 
+                        width:640,
+                        height:480 /*,
+                        color: "blue",
+                        fillColor: "#CCCCCC",
+                        sequenceDiagram: {
+                            actorWidth: 100,
+                            actorHeight: 100,
+                            horizontalSpacing: 60,
+                            verticalSpacing: 100
+                        }*/
+                        });
                 var svg = u2s.render(diagramModel);
                 $("#output").html(svg);
             });

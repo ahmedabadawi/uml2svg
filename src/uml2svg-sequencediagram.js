@@ -29,6 +29,19 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
 
     this.init = function() {
         if(that.validate()) {
+            // Load default configurations
+            that.options.sequenceDiagram = that.options.sequenceDiagram || { };
+            (function(o) {
+                if(!o.actorWidth) { o.actorWidth = 60; }
+                if(!o.actorHeight) { o.actorHeight = 40; }
+                if(!o.horizontalSpacing) { o.horizontalSpacing = 100; }
+                if(!o.verticalSpacing) { o.verticalSpacing = 25; }
+                if(!o.marginLeft) { o.marginLeft = 40; }
+                if(!o.marginTop) { o.marginTop = 5; }
+                if(!o.marginBottom) { o.marginBottom = o.marginTop; }
+                if(!o.marginRight) { o.marginRight = o.marginLeft; }
+            })(that.options.sequenceDiagram);
+
             that.diagramModel.actors.sort(function(a1, a2) { return a1.order - a2.order; });
             that.diagramModel.messages.sort(function(m1, m2) {  return m1.order - m2.order; });
             return true;
@@ -52,18 +65,18 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
 
     this.renderActors = function() {
         var actorElements;
-        var actorWidth = 60;    // TODO: Externalize in configurable options 
-        var actorHeight = 40;   // TODO: Externalize in configurable options 
-        var offsetY = 0;
-        var offsetX = 50;      // TODO: Externalize in configurable options 
-        var gapX = 100;    // TODO: Externalize in configurable options 
+        var actorWidth = that.options.sequenceDiagram.actorWidth; 
+        var actorHeight = that.options.sequenceDiagram.actorHeight;
+        var offsetY = that.options.sequenceDiagram.marginTop;
+        var offsetX = that.options.sequenceDiagram.marginLeft;
+        var horizontalSpacing = that.options.sequenceDiagram.horizontalSpacing;
 
         for(var i = 0; i < that.diagramModel.actors.length; i++) {
             actorElements  += 
                 that.renderActor(that.diagramModel.actors[i],
                                actorWidth, actorHeight,
                                 offsetX, offsetY);
-            offsetX += gapX;
+            offsetX += horizontalSpacing;
         }
 
         return actorElements;
@@ -116,15 +129,18 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
     
     this.renderMessages = function() {
         var messageElements;
-        var offsetY = 60;  // TODO: Externalize in configurable options 
-        var gapY = 25;     // TODO: Externalize in configurable options
+        var offsetY = 
+            that.options.sequenceDiagram.marginTop + 
+            that.options.sequenceDiagram.actorHeight +
+            that.options.sequenceDiagram.verticalSpacing; 
+        var verticalSpacing = that.options.sequenceDiagram.verticalSpacing;
 
         for(var i = 0; i < that.diagramModel.messages.length; i++) {
             messageElements  += 
                 that.renderMessage(that.diagramModel.messages[i],
                                    offsetY);
-            offsetY += gapY;
-            if(offsetY > (that.options.height - 60)) {
+            offsetY += verticalSpacing;
+            if(offsetY > (that.options.height - that.options.actorHeight - that.options.marginBottom)) {
                 //TODO: Handle that the height is not enough
             }
         }
