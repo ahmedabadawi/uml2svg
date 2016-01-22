@@ -105,11 +105,12 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
                 lifetimeLineX, lifetimeLineYStart, lifetimeLineYEnd);
         
         // Render actor title
+        var textX = x + (width / 2);
         var actorUpperTitle = 
-            that.parent.renderText(x, upperY, width, height, actor.title);
+            that.parent.renderText(textX, upperY, width, height, actor.title);
         
         var actorLowerTitle = 
-            that.parent.renderText(x, lowerY, width, height, actor.title);
+            that.parent.renderText(textX, lowerY, width, height, actor.title);
         
         // Attach the bounding box to the actor
         actor.box = {
@@ -164,6 +165,7 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
         // Render the arrow
         var arrowStartX = callerActor.box.lifetimeLineX,
             arrowEndX = calleeActor.box.lifetimeLineX;
+        var width = Math.abs(arrowStartX - arrowEndX);
 
         var arrowElement =
             that.parent.renderArrow(
@@ -171,15 +173,14 @@ uml2svg.renderer.SequenceDiagram = function(parent, options) {
                 (message.type === 'response'));
         
         // Render the message text
-        // TODO: Center the message text
         var textX = 
             (callerActor.box.lifetimeLineX < calleeActor.box.lifetimeLineX) ?
             callerActor.box.lifetimeLineX :
             calleeActor.box.lifetimeLineX;
-        var textY = 
-            offsetY;
-        textX += 10;        // TODO: Fix text centering 
-        textY -= 5;         // TODO: Fix text centering
+        var textY = offsetY;
+        textX += (width / 2);
+        textY -= 5;     // HACK: move it to be over the line
+
         var textElement =
             that.parent.renderTextXY(
                 textX, textY, message.message);

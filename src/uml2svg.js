@@ -83,9 +83,9 @@ uml2svg.Uml2svg.prototype.renderRect = function(x, y, width, height) {
 
 uml2svg.Uml2svg.prototype.renderText = function(x, y, width, height, text) {
     var textX, textY;
-    textX = x + 5;
+    textX = x;
     textY = y + (height / 2);
-    // TODO: Handle centering the text within the bounding box
+    
     var textElement = 
         this.renderTextXY(textX, textY, text);
     return textElement;
@@ -93,7 +93,7 @@ uml2svg.Uml2svg.prototype.renderText = function(x, y, width, height, text) {
 
 uml2svg.Uml2svg.prototype.renderTextXY = function(x, y ,text) {
     var textElement = 
-        '<text fill="' + this.options.color + 
+        '<text text-anchor="middle" fill="' + this.options.color + 
         '" font-size="' + this.options.fontSize + 
         '" font-family="' + this.options.fontFamily + '"' + 
         ' x="' + x + '" y="' + y + '">' + 
