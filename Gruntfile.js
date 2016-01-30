@@ -28,9 +28,18 @@ module.exports = function(grunt) {
                 }
             }
         },
+        mochaTest: {
+            test: {
+                options: {
+                    reporter: 'spec',
+                    spawn: false
+                },
+                src: ['tests/**/*.js'],
+            }
+        },
         watch: {
             files: ['<%= jshint.files %>'],
-            tasks: ['jshint','concat']
+            tasks: ['jshint','concat','mochaTest']
         }
     });
 
@@ -38,7 +47,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-mocha-test');
 
-    grunt.registerTask('default', ['jshint','concat','uglify']);
+    grunt.registerTask('default', ['jshint','concat','mochaTest','uglify']);
     grunt.registerTask('development', ['watch']);
 };

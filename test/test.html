@@ -104,6 +104,9 @@
     
             <button id="render">Render</button>    
         </div>
+        <textarea id="diagramText" rows="5" cols="80">
+        </textarea>
+        <button id="parse">Parse</button>
         <hr/>
         <div id="output" style="height: 300; width: 640; overflow: scroll">
         </div>
@@ -116,6 +119,13 @@
     <script>
         $(function() {
             console.log("Document Ready");
+            $("#parse").on("click", function() {
+                var diagramText = $("#diagramText").val();
+                var parser = new uml2svg.parser.SequenceDiagram();
+                var result = parser.parse(diagramText);
+                alert(result.stringify());
+            });
+
             $("#render").on("click", function() {
                 var diagramType = $("#diagramType").val();
                 var diagramModel = $("#diagramModel").val();

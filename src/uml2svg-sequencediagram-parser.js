@@ -23,7 +23,7 @@ uml2svg.parser.SequenceDiagram.prototype.parse = function(diagramText, id) {
         lastMessageIndex = 0;
 
     var handleActor = function(actorTitle) {
-        if(!actors.any(function(thisActor) { thisActor.title === actorTitle; })) {
+        if(!actors.any(function(thisActor) { return thisActor.title === actorTitle; })) {
             actors.push( {
                 title: actorTitle,
                 order: lastActorIndex++
@@ -40,12 +40,14 @@ uml2svg.parser.SequenceDiagram.prototype.parse = function(diagramText, id) {
             type: (direction === '->' ? 'request' : 'response')
         });
     };
+    if(parseEntries(diagramText, handleActor, handleMessage)) {
+        diagramModel.id = id;
+        diagramModel.actors = actors;
+        diagramModel.messages = messages;
 
-    diagramModel.id = id;
-    diagramModel.actors = actors;
-    diagramModel.messages = messages;
-
-    return diagramModel;
+        return diagramModel;
+    }
+    return false;
 };
 
 uml2svg.parser.SequenceDiagram.prototype.parseEntries = 
@@ -55,17 +57,22 @@ uml2svg.parser.SequenceDiagram.prototype.parseEntries =
     for(var i = 0; i < lines.length; i++) {
         var line = lines[i];
         var modelEntry = this.parseLine(line, handleActor, handleMessage);
+        if(!modelEntry) {
+            // TODO: throw error that the line is invalid
+            return false;
+        }
     }
 
     return true;
 };
 
-uml2svg.parser.SequenceDiagram.prototype = 
-    function parseLine(line, handleActor, handleMessage) {
+uml2svg.parser.SequenceDiagram.prototype.parseLine = 
+    function(line, handleActor, handleMessage) {
     
-    var entry = {};
     var lineParts = line.split(/\s*(:|->|<-)\s*/g);
-    if(validateLineParts(lineParts)) {
+    if(this.validateLineParts(lineParts)) {
+        var entry = {};
+        
         // 0: Actor 1
         entry.actor1 = lineParts[0];
         // 1: Message Direction
@@ -76,22 +83,29 @@ uml2svg.parser.SequenceDiagram.prototype =
         // 4: Message
         entry.message = lineParts[4];
     
-        handleActor(entry.actor1);
-        handleActor(entry.actor2);
-        handleMessage(entry.message, 
+        if(handleActor && handleMessage) { 
+            handleActor(entry.actor1);
+            handleActor(entry.actor2);
+        
+            handleMessage(entry.message, 
                       entry.actor1);
+        }
+
+        return entry;
     }
-    return entry;
+    return null;
 };
 
-uml2svg.parser.SequenceDiagram.prototype.validateLineParts(lineParts) {
+uml2svg.parser.SequenceDiagram.prototype.validateLineParts = 
+    function (lineParts) {
+    
     // TODO: Validate line parts
     return (lineParts && 
             lineParts.length == 5 &&
-            lineParts[0] &&
-            lineParts[2] &&
+            lineParts[0] && lineParts[0].trim().length > 0 &&
+            lineParts[2] && lineParts[2].trim().length > 0 &&
             lineParts[3] && lineParts[3] === ':' &&
-            lineParts[4]);
+            lineParts[4] && lineParts[4].trim().length > 0);
 };
 
 /*
