@@ -69,19 +69,20 @@ uml2svg.parser.SequenceDiagram.prototype.parseEntries =
 uml2svg.parser.SequenceDiagram.prototype.parseLine = 
     function(line, handleActor, handleMessage) {
     
-    var lineParts = line.split(/\s*(:|->|<-)\s*/g);
+    var lineParts = line.split(/\s*(:|->|<-)\s*/);
+    // TODO: Handle trimming the parts with the regexp directly
     if(this.validateLineParts(lineParts)) {
         var entry = {};
         
         // 0: Actor 1
-        entry.actor1 = lineParts[0];
+        entry.actor1 = lineParts[0].trim();
         // 1: Message Direction
-        entry.direction = lineParts[1];
+        entry.direction = lineParts[1].trim();
         // 2: Actor 2
-        entry.actor2 = lineParts[2];
+        entry.actor2 = lineParts[2].trim();
         // 3: Message Separator - No Need to Capture It
         // 4: Message
-        entry.message = lineParts[4];
+        entry.message = lineParts[4].trim();
     
         if(handleActor && handleMessage) { 
             handleActor(entry.actor1);
@@ -99,13 +100,18 @@ uml2svg.parser.SequenceDiagram.prototype.parseLine =
 uml2svg.parser.SequenceDiagram.prototype.validateLineParts = 
     function (lineParts) {
     
-    // TODO: Validate line parts
-    return (lineParts && 
+    var objectPattern = /^[\w]+/;
+    var messagePattern = /^[\w]+/;
+    var directionPattern = /(->|<-)/;
+
+    // Validate line parts
+    return  lineParts !== null && 
             lineParts.length == 5 &&
-            lineParts[0] && lineParts[0].trim().length > 0 &&
-            lineParts[2] && lineParts[2].trim().length > 0 &&
-            lineParts[3] && lineParts[3] === ':' &&
-            lineParts[4] && lineParts[4].trim().length > 0);
+            lineParts[0] !== null && objectPattern.test(lineParts[0].trim()) &&
+            lineParts[1] !== null && directionPattern.test(lineParts[1].trim()) && 
+            lineParts[2] !== null && objectPattern.test(lineParts[2].trim()) &&
+            lineParts[3] !== null && lineParts[3] === ':' &&
+            lineParts[4] !== null && messagePattern.test(lineParts[4].trim());
 };
 
 /*

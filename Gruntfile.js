@@ -28,18 +28,26 @@ module.exports = function(grunt) {
                 }
             }
         },
-        mochaTest: {
-            test: {
-                options: {
-                    reporter: 'spec',
-                    spawn: false
-                },
-                src: ['tests/**/*.js'],
+        mocha: {
+            all: {
+                src: ['test/sequencediagram-spec.html'],
+            },
+            options: {
+                run: true
             }
         },
+//        mochaTest: {
+//            test: {
+//                options: {
+//                    reporter: 'spec',
+//                    spawn: false
+//                },
+//                //src: ['tests/**/*.js'],
+//            }
+//        },
         watch: {
             files: ['<%= jshint.files %>'],
-            tasks: ['jshint','concat','mochaTest']
+            tasks: ['jshint','concat','mocha']
         }
     });
 
@@ -47,8 +55,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.loadNpmTasks('grunt-mocha');
+    //grunt.loadNpmTasks('grunt-mocha-test');
 
-    grunt.registerTask('default', ['jshint','concat','mochaTest','uglify']);
+    grunt.registerTask('default', ['jshint','concat','mocha','uglify']);
     grunt.registerTask('development', ['watch']);
 };
