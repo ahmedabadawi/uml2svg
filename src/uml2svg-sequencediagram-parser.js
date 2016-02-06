@@ -23,15 +23,24 @@ uml2svg.parser.SequenceDiagram.prototype.parse = function(diagramText, id) {
         lastMessageIndex = 0;
 
     var handleActor = function(actorTitle) {
-        if(!actors.any(function(thisActor) { return thisActor.title === actorTitle; })) {
-            actors.push( {
-                title: actorTitle,
-                order: lastActorIndex++
-            });
-        }    
+        for(var i = 0; i < actors.length; i++) {
+            if(actors[i].title === actorTitle) {
+                return;
+            }
+        }
+        //if(!actors.any(function(thisActor) { return thisActor.title === actorTitle; })) {
+        actors.push( {
+            title: actorTitle,
+            order: lastActorIndex++
+        });
     };
     
     var handleMessage = function(messageTitle, actor1, direction, actor2) {
+        // TODO: Handle self call, for now fail with an error
+        if(actor1 === actor2) {
+            throw new Error("Self-Call is not supported");
+        }
+
         messages.push( {
             title: messageTitle,
             order: lastMessageIndex++,
@@ -40,7 +49,7 @@ uml2svg.parser.SequenceDiagram.prototype.parse = function(diagramText, id) {
             type: (direction === '->' ? 'request' : 'response')
         });
     };
-    if(parseEntries(diagramText, handleActor, handleMessage)) {
+    if(this.parseEntries(diagramText, handleActor, handleMessage)) {
         diagramModel.id = id;
         diagramModel.actors = actors;
         diagramModel.messages = messages;
@@ -51,9 +60,9 @@ uml2svg.parser.SequenceDiagram.prototype.parse = function(diagramText, id) {
 };
 
 uml2svg.parser.SequenceDiagram.prototype.parseEntries = 
-    function(diagamText, handleActor, handleMessage) {
+    function(diagramText, handleActor, handleMessage) {
     
-    var lines = diagramModel.match(/[^\r\n]+/g);
+    var lines = diagramText.match(/[^\r\n]+/g);
     for(var i = 0; i < lines.length; i++) {
         var line = lines[i];
         var modelEntry = this.parseLine(line, handleActor, handleMessage);
@@ -88,8 +97,11 @@ uml2svg.parser.SequenceDiagram.prototype.parseLine =
             handleActor(entry.actor1);
             handleActor(entry.actor2);
         
-            handleMessage(entry.message, 
-                      entry.actor1);
+            handleMessage(
+                        entry.message, 
+                        entry.actor1,
+                        entry.direction,
+                        entry.actor2);
         }
 
         return entry;
