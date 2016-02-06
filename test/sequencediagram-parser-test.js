@@ -115,7 +115,7 @@ describe('sequencediagram-parser', function() {
                          'Correct number of messages parsed');
             
             // A->B:Test Message
-            assert.equal('Test Message', messages[0].title,
+            assert.equal('Test Message', messages[0].message,
                         '1st message should have title "Test Message"');
             assert.equal( 0, messages[0].order,
                         '1st message should have order 0');
@@ -127,7 +127,7 @@ describe('sequencediagram-parser', function() {
                         '1st message should have type "request"');
 
             // B->C:Test Sub Message
-            assert.equal('Test Sub Message', messages[1].title,
+            assert.equal('Test Sub Message', messages[1].message,
                         '2nd message should have title "Test Sub Message"');
             assert.equal( 1, messages[1].order,
                         '2nd message should have order 1');
@@ -139,7 +139,7 @@ describe('sequencediagram-parser', function() {
                         '2nd message should have type "request"');
             
             // B<-C:Sub Response
-            assert.equal('Sub Response', messages[2].title,
+            assert.equal('Sub Response', messages[2].message,
                         '3rd message should have title "Sub Response"');
             assert.equal( 2, messages[2].order,
                         '3rd message should have order 2');
@@ -151,7 +151,7 @@ describe('sequencediagram-parser', function() {
                         '3rd message should have type "response"');
             
             // B->D:Another Sub Message
-            assert.equal('Another Sub Message', messages[3].title,
+            assert.equal('Another Sub Message', messages[3].message,
                         '3rd message should have title "Another Sub Message"');
             assert.equal( 3, messages[3].order,
                         '3rd message should have order 3');

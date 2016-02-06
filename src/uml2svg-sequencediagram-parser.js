@@ -42,7 +42,7 @@ uml2svg.parser.SequenceDiagram.prototype.parse = function(diagramText, id) {
         }
 
         messages.push( {
-            title: messageTitle,
+            message: messageTitle,
             order: lastMessageIndex++,
             callerActor: actor1,
             calleeActor: actor2,
