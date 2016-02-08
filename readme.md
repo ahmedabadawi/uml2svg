@@ -38,10 +38,11 @@ Supports simple parsing from plain text into a diagram
 
 Sample diagram in plain text
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
 Object A->Object B: Message
 Object B->Object C: Check Something
 Object C<-Object B: Success
 Object B<-A: Response
-
+```
 ### Class Diagrams
 [TODO]
