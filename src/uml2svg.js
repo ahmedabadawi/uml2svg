@@ -30,7 +30,7 @@ uml2svg.Uml2svg.prototype.render = function(diagramModel) {
 uml2svg.Uml2svg.prototype.renderSvg = function(id, defs, content) {
     var svgElement = 
         '<svg ' +
-        'id="' + id + '"' + 
+        'id="' + id + '" ' + 
         'width="' + this.options.width + '" height="' + this.options.height + '">' +
         defs +
         content +
@@ -58,14 +58,14 @@ uml2svg.Uml2svg.prototype.renderArrowMarker = function() {
 
     var arrowMarker = 
         '<marker id="arrow" '+
-        'markerWidth="' + markerWidth + '"' +
+        'markerWidth="' + markerWidth + '" ' +
         'markerHeight="' + markerHeight + '" ' +
-        ' refx="' + refx + '" refy="' + refy + '" orient = "auto">'+
+        'refx="' + refx + '" refy="' + refy + '" orient="auto">'+
         '<path d="' + 
         'M' + point1.x + ',' + point1.y +' ' +
         'L' + point2.x + ',' + point2.y +' ' +
-        'L' + point3.x + ',' + point3.y + '  Z" ' + 
-        'fill="' + this.options.Color + '" />' +
+        'L' + point3.x + ',' + point3.y + ' Z" ' + 
+        'fill="' + this.options.color + '" />' +
         '</marker>';
 
     return arrowMarker;
@@ -73,10 +73,10 @@ uml2svg.Uml2svg.prototype.renderArrowMarker = function() {
 
 uml2svg.Uml2svg.prototype.renderRect = function(x, y, width, height) {
     var rectElement = 
-        '<rect x="' + x + '" y="' + y + '"' +
-            ' width="' + width + '" height ="' + height +'"' +
-            ' style="fill:' + this.options.fillColor + 
-            '; stroke:' + this.options.color + 
+        '<rect x="' + x + '" y="' + y + '" ' +
+            'width="' + width + '" height ="' + height +'" ' +
+            'style="fill:' + this.options.fillColor + 
+            ';stroke:' + this.options.color + 
             ';stroke-width:' + this.options.lineWidth + '" />';
     return rectElement;
 };

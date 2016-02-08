@@ -7,20 +7,65 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="favicon.ico">
-
+        <link
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw=
+        sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw=="
+        crossorigin="anonymous">
+        <link href="sample-app.css" rel="stylesheet">
         <title>HTML - UML2SVG - SampleApp</title>
     </head>
     <body>
-    
-    </body>
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-
-    <script src="../dist/uml2svg.min.js"></script> 
-    
-    <script>
-        $(function() {
+        <div class="jumbotron">
+            <div class="container">
+                <h1>UML2SVG - SampleApp</h1>
+                <p>This sample application demonstrates the usage of uml2svg.js
+                library, allowing the user to enter simple text to be converted
+                into UML diagram. Currently supporting Sequence Diagrams only
+                </p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="diagramType">Select Diagram Type</label>
+                        <select class="form-control" id="diagramType">
+                            <option value="SequenceDiagram">Sequence
+                            Diagram</option>
+                        </select>
+                        <label for="diagramText">Diagram Text</label>
+                        <textarea class="form-control" rows="20"
+                            id="diagramText"></textarea>
+                        <button type="button" class="btn btn-default"
+                            area-label="Refresh" id="render">
+                            <span class="glyphicon glyphicon-refresh"
+                                area-hidden="true"></span> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="panel panel-default">
+                        <div class="panel diagram-area" id="diagramArea"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
-        });
-    </script>
+        <footer class="footer">
+            <div class="container">
+                <p class="text-muted">&copy; 2016 ChainReaction Software</p>
+            </div>
+        </footer>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script
+src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo=
+sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A=="
+crossorigin="anonymous"></script>
+    <script src="../dist/uml2svg.js"></script> 
+    <script src="./sample-app.js"></script>
+    </body>
 </html>
 

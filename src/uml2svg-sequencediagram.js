@@ -65,7 +65,7 @@ uml2svg.renderer.SequenceDiagram.prototype.renderDefs = function() {
 };
 
 uml2svg.renderer.SequenceDiagram.prototype.renderActors = function() {
-    var actorElements;
+    var actorElements = '';
     var actorWidth = this.options.sequenceDiagram.actorWidth; 
     var actorHeight = this.options.sequenceDiagram.actorHeight;
     var offsetY = this.options.sequenceDiagram.marginTop;
@@ -131,7 +131,7 @@ uml2svg.renderer.SequenceDiagram.prototype.renderActor =
 };
     
 uml2svg.renderer.SequenceDiagram.prototype.renderMessages = function() {
-    var messageElements;
+    var messageElements = '';
     var offsetY = 
         this.options.sequenceDiagram.marginTop + 
         this.options.sequenceDiagram.actorHeight +
