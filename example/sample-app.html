@@ -20,14 +20,17 @@
         <div class="jumbotron">
             <div class="container">
                 <h1>UML2SVG - SampleApp</h1>
-                <p>This sample application demonstrates the usage of uml2svg.js
+                <p class="lead">This sample application demonstrates the usage of uml2svg.js
                 library, allowing the user to enter simple text to be converted
-                into UML diagram. Currently supporting Sequence Diagrams only
+                into UML diagram. 
                 </p>
+                <a class="btn btn-primary btn-lg" href="#demo">Try It Now...</a>
+                <p class="text-muted">Currently supporting Sequence Diagrams
+                only</p>
             </div>
         </div>
         <div class="container">
-            <div class="row">
+            <div class="row" id="demo">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="diagramType">Select Diagram Type</label>
@@ -37,7 +40,7 @@
                         </select>
                         <label for="diagramText">Diagram Text</label>
                         <textarea class="form-control" rows="20"
-                            id="diagramText"></textarea>
+                            id="diagramText" placeholder="A->B:C"></textarea>
                         <button type="button" class="btn btn-default"
                             area-label="Refresh" id="render">
                             <span class="glyphicon glyphicon-refresh"
