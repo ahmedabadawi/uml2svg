@@ -6,7 +6,11 @@ No runtime dependency on any other libraries.
 
 ### Build
 In order to build uml2svg, you have to have grunt cli to generate the dist/
-folder
+folder. The build is a two step, the first one to download and install the
+development time dependencies and second to run grunt which takes care of
+running various tasks; JS Hint, concatenate the source files into a single
+distributable file and run the unit tests.
+
 ```shell
 npm install
 grunt
@@ -14,15 +18,25 @@ grunt
 
 Also there is a target in the grunt for development that continuously watches
 the javascript files and run the grunt tasks, this can be invoked by
+
 ```shell
 grunt development
 ```
 
 ### Usage
+The library consists of two main parts; parsers and renderers. Parsers are
+responsible for converting plain text written in a diagram specific grammar into
+an object model understandable by the parser. Renderers are responsible for
+generating SVG element containing all the graphics elements for a diagram
+specified by the diagram model. Following is a simple code that invokes the
+parser and the renderer, assuming the diagramType is a valid diagram processor,
+for example *SequenceDiagram*, the diagramText denotes the text valid for the
+    diagram grammar and the options are the defined options for the diagram. A
+    separate section for the options, see below.
 
 ```javascript
 var parser = new uml2svg.parser['diagramType']();
-var diagramModel = parser.parse('diagramText');
+var diagramModel = parser.parse('diagramText', svgElementId);
 var renderer = new uml2svg.Uml2svg('diagramType', options);
 var svg = renderer.render(diagramModel);
 // use the svg to inject it into the DOM
@@ -45,6 +59,7 @@ extract its own options. Following are the main options
 ### Sequence Diagrams
 Builds SVG for Sequence Diagram based on model JS objects containing the diagram
 details.
+
 #### Options
 The sequence diagram renderer extracts its specific options under the main
 options sequenceDiagram object. Following are the sequence diagram options
@@ -59,8 +74,14 @@ options sequenceDiagram object. Following are the sequence diagram options
 - marginBottom: specifies the bottom margin of the diagram elements (default 5px)
 - marginRight: specifies the right margin of the diagram elements (default 40px)
 
-Sample model
-~~~~~~~~~~~~
+### Diagram Model
+The sequence diagram supports a model that represents the id of the SVG element,
+the actors and messages. The actors list contains the actors and their order
+and stereotype within the diagram. The messages list contain the messages and
+their order and related actors (caller and callee) and whether the message is a
+request or a response.
+
+```javascript
 { 
     "id": "// represents the generated SVG HTML element Id",
     "actors": [
@@ -82,21 +103,27 @@ Sample model
             "type": " // call/return also can be request/response. The call or
             request are represented by a solid line while return or response are
             represented by a dashed line. When omitted the default is request",
-            note: " // the note attached to the request / response"
+            "note": " // the note attached to the request / response"
         }
     ]
 }
+```
 
-Supports simple parsing from plain text into a diagram
+### Text Grammar
+The sequence diagrams support simple grammar to represent the diagram. Each line
+contains a message by a caller to a callee and the message can either be a
+request or response by using the direction -> or <- respectively.
 
-Sample diagram in plain text
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*Caller*  (*<-* | *->*)  *Callee* : *Message*
+
+
 ```
 Object A->Object B: Message
 Object B->Object C: Check Something
 Object C<-Object B: Success
 Object B<-A: Response
 ```
+
 ### Class Diagrams
 [TODO]
 
@@ -107,8 +134,12 @@ Object B<-A: Response
   are long
 - Incorrect syntax for the parser will only stop the rendering but will not
   report the exact errors
+- The sequence diagram parser is case sensitive, where Object A is not the same
+  as Object a
 
 ### Ideas and New Features
 - Merge the parser into the uml2svg.Uml2svg class to encapsulate the parsing and
   rendering behind the same interface
 - Client side library to handle diagram updates after rendering
+- Actor stereotypes display in the diagram
+- Add the notes to the rendering of the actors and messages
