@@ -1,5 +1,5 @@
 ## UML2SVG.JS
-A simple JavaScript library that generates SVG for UML. Convention-Based Extensiblity for custom
+A simple JavaScript library that generates SVG for UML. Convention-Based Extensibility for custom
 diagram renderers. The library can be used on the client-side and on
 server-side to generate the SVG representing the UML diagrams.
 No runtime dependency on any other libraries.
@@ -85,7 +85,7 @@ request or a response.
 { 
     "id": "// represents the generated SVG HTML element Id",
     "actors": [
-        // List of actos (objects / classes / general actors)
+        // List of actors (objects / classes / general actors)
         {
             "order": "// Numeric order of the actor",
             "title": "// actor title to be displayed in the diagram",
@@ -98,8 +98,8 @@ request or a response.
         {
             "order": "// Numeric order of the message",
             "message": "// title of the message call (displayed over the arrow)",
-            "callerActor": "// name/title of the caller or requestor actor",
-            "caleeActor": "// name/title of the calee actor",
+            "callerActor": "// name/title of the caller or requester actor",
+            "calleeActor": "// name/title of the callee actor",
             "type": " // call/return also can be request/response. The call or
             request are represented by a solid line while return or response are
             represented by a dashed line. When omitted the default is request",
@@ -142,9 +142,9 @@ Object B<-A: Response
   rendering behind the same interface
 - [ ] Expose the diagram model to the client
 - [ ] Allow attaching events tp the diagram model
-- [ ] Expose parsing errors and warnings (line#, line text, and error/warning)
+- [X] Expose parsing errors and warnings (line#, line text, and error/warning)
 - [ ] Sample App - Add clear functionality
-- [ ] Sample App - Show parsing errors and warnings
+- [X] Sample App - Show parsing errors and warnings
 - [ ] Add support for Self-Call message
 - [ ] Attach rendering properties to diagram model, such as width and height
 - [ ] Allow changing rendering properties to reflect on the diagram

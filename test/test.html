@@ -129,9 +129,15 @@
             $("#parse").on("click", function() {
                 var diagramType = $("#diagramType").val();
                 var diagramText = $("#diagramText").val();
-                var parser = new uml2svg.parser[diagramType]();
+                var parser = new uml2svg.parser[diagramType](
+                    function(error) {
+                        alert("Error in line " + error.lineNumber + ": " +
+                            error.message);
+                    });
                 var result = parser.parse(diagramText);
-                var diagramModel = $("#diagramModel").val(JSON.stringify(result));
+                if(result) {
+                    var diagramModel = $("#diagramModel").val(JSON.stringify(result));
+                }
             });
 
             $("#render").on("click", function() {
@@ -141,8 +147,7 @@
                 console.log(diagramType);
                 console.log(diagramModel);
                 diagramModel = JSON.parse(diagramModel); 
-                var u2s = new uml2svg.Uml2svg(
-                    diagramModel,
+                var diagram = new uml2svg.Uml2svg(
                     diagramType, 
                     { 
                         width:640,
@@ -156,7 +161,8 @@
                             verticalSpacing: 100
                         }*/
                         });
-                var svg = u2s.render();
+                diagram.init(diagramModel);
+                var svg = diagram.render();
                 $("#output").html(svg);
             });
         });

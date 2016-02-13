@@ -4,13 +4,11 @@ var uml2svg = uml2svg || {};        // Namespace
 // parser according to the diagramType parameter in the format of uml2svg-<diagramType> for example diagram type "sequencediagram" inistantiates the uml2svg-sequencediagram renderer. Provides a proxy to the selected renderer
 // options define the width and height of the target svg to be used by the
 // renderer
-uml2svg.Uml2svg = function(input, diagramType, options) {
-    if(!input) {
-        throw new Error("Input cannot be null.");
-    }
-    
-    this.inputType = (typeof input === "string") ? "text" : "model";
+uml2svg.Uml2svg = function(diagramType, options) {
+    this.diagramType = diagramType;
 
+    this.parseErrorHandlers = [];
+    
     this.options = options || { };
     // Set the default options
     (function(o) {
@@ -22,14 +20,31 @@ uml2svg.Uml2svg = function(input, diagramType, options) {
         if(!o.arrowHeadWidth) { o.arrowHeadWidth = 18; }
         if(!o.arrowHeadHeight) { o.arrowHeadHeight = 12; }
     })(this.options);
+};
 
-    this.renderer = new uml2svg.renderer[diagramType](this, options);
+uml2svg.Uml2svg.prototype.init = function(input) {
+    var that = this;    // save the ref
+    if(!input) {
+        throw new Error("Input cannot be null.");
+    }
+    
+    this.inputType = (typeof input === "string") ? "text" : "model";
+    
+    this.renderer = new uml2svg.renderer[this.diagramType](this, this.options);
     if(!this.renderer) {
         throw new Error("Undefined Diagram Type or renderer is not defined.");
     }
     
     if(this.inputType === "text") { // If the input is not text, no need to have a parser
-        this.parser = new uml2svg.parser[diagramType](this, options);
+        this.parser = 
+            new uml2svg.parser[this.diagramType](
+                function(error) { 
+                    if(that.parseErrorHandlers) {
+                        for(var i = 0; i < that.parseErrorHandlers.length; i++) { 
+                            that.parseErrorHandlers[i](error); } 
+                        }
+                    });
+
         if(!this.parser) {
             throw new Error("Undefined Diagram Type or parser is not defined.");
         }
@@ -42,10 +57,18 @@ uml2svg.Uml2svg = function(input, diagramType, options) {
             throw new Error("Diagram Model is invalid.");
         }
     }
+
+    this.initialized = true;
 };
 
 uml2svg.Uml2svg.prototype.render = function() {
+    if(!this.initialized) throw new Error("Diagram is not initialized");
+
     return this.renderer.render(this.diagramModel);
+};
+
+uml2svg.Uml2svg.prototype.addParseErrorHandler = function(handler) {
+    if(handler) this.parseErrorHandlers.push(handler);
 };
 
 uml2svg.Uml2svg.prototype.renderSvg = function(id, defs, content) {

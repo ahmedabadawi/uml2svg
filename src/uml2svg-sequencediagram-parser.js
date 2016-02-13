@@ -9,9 +9,8 @@ uml2svg.parser = uml2svg.parser || {};
 // Object B->Object C: Message
 // Object C-->Object B: Response
 // Object B-->Object A: Response
-uml2svg.parser.SequenceDiagram = function(parent, options) {
-    this.options = options;
-    this.parent = parent;
+uml2svg.parser.SequenceDiagram = function(parseErrorsHandler) {
+    this.parseErrorsHandler = parseErrorsHandler;
 };
 
 uml2svg.parser.SequenceDiagram.prototype.parse = function(diagramText, id) {
@@ -56,7 +55,7 @@ uml2svg.parser.SequenceDiagram.prototype.parse = function(diagramText, id) {
 
         return diagramModel;
     }
-    return false;
+    return null;
 };
 
 uml2svg.parser.SequenceDiagram.prototype.parseEntries = 
@@ -65,22 +64,18 @@ uml2svg.parser.SequenceDiagram.prototype.parseEntries =
     var lines = diagramText.match(/[^\r\n]+/g);
     for(var i = 0; i < lines.length; i++) {
         var line = lines[i];
-        var modelEntry = this.parseLine(line, handleActor, handleMessage);
-        if(!modelEntry) {
-            // TODO: throw error that the line is invalid
-            return false;
-        }
+        this.parseLine(line, (i + 1), handleActor, handleMessage);
     }
 
     return true;
 };
 
 uml2svg.parser.SequenceDiagram.prototype.parseLine = 
-    function(line, handleActor, handleMessage) {
+    function(line, lineNumber, handleActor, handleMessage) {
     
     var lineParts = line.split(/\s*(:|->|<-)\s*/);
     // TODO: Handle trimming the parts with the regexp directly
-    if(this.validateLineParts(lineParts)) {
+    if(this.validateLineParts(lineParts, lineNumber)) {
         var entry = {};
         
         // 0: Actor 1
@@ -110,20 +105,58 @@ uml2svg.parser.SequenceDiagram.prototype.parseLine =
 };
 
 uml2svg.parser.SequenceDiagram.prototype.validateLineParts = 
-    function (lineParts) {
+    function (lineParts, lineNumber) {
     
     var objectPattern = /^[\w]+/;
     var messagePattern = /^[\w]+/;
     var directionPattern = /(->|<-)/;
 
     // Validate line parts
-    return  lineParts !== null && 
-            lineParts.length == 5 &&
-            lineParts[0] !== null && objectPattern.test(lineParts[0].trim()) &&
-            lineParts[1] !== null && directionPattern.test(lineParts[1].trim()) && 
-            lineParts[2] !== null && objectPattern.test(lineParts[2].trim()) &&
-            lineParts[3] !== null && lineParts[3] === ':' &&
-            lineParts[4] !== null && messagePattern.test(lineParts[4].trim());
+
+    
+    if(lineParts === null) { 
+        throw new Error("lineParts should not be null");
+    } 
+    
+    if(lineParts.length !== 5) {
+        this.addParseError(lineNumber, "Line should follow the grammar A->B:M");
+        return false;
+    }
+    
+    if(lineParts[0] === null || !objectPattern.test(lineParts[0].trim())) {
+        this.addParseError(lineNumber, "Caller actor is missing or in an invalid format");
+        return false;
+    }
+
+    if(lineParts[1] === null || !directionPattern.test(lineParts[1].trim())) {
+        this.addParseError(lineNumber, "Direction is in an invalid format");
+        return false;
+    }
+  
+    if(lineParts[2] === null || !objectPattern.test(lineParts[2].trim())) {
+        this.addParseError(lineNumber, "Callee actor is missing or in an invalid format");
+        return false;
+    }
+ 
+    if(lineParts[3] === null || lineParts[3] !== ':') {
+        this.addParseError(lineNumber, "Separator between actors and message is missing or line in an invalid format");
+        return false;
+    }
+
+    if(lineParts[4] === null || !messagePattern.test(lineParts[4].trim())) {
+        this.addParseError(lineNumber, "Message is missing or in an invalid format");
+        return false;
+    }
+    
+    return true;
+};
+
+uml2svg.parser.SequenceDiagram.prototype.addParseError = 
+    function(lineNumber, errorMessage) {
+    //this.parseErrors.push( { lineNumber: lineNumber, message: errorMessage } );
+    if(this.parseErrorsHandler) {
+        this.parseErrorsHandler({ lineNumber: lineNumber, message: errorMessage });
+    }
 };
 
 /*
