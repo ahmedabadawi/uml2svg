@@ -138,8 +138,18 @@ Object B<-A: Response
   as Object a
 
 ### Ideas and New Features
-- Merge the parser into the uml2svg.Uml2svg class to encapsulate the parsing and
+- [X] Merge the parser into the uml2svg.Uml2svg class to encapsulate the parsing and
   rendering behind the same interface
-- Client side library to handle diagram updates after rendering
-- Actor stereotypes display in the diagram
-- Add the notes to the rendering of the actors and messages
+- [ ] Expose the diagram model to the client
+- [ ] Allow attaching events tp the diagram model
+- [ ] Expose parsing errors and warnings (line#, line text, and error/warning)
+- [ ] Sample App - Add clear functionality
+- [ ] Sample App - Show parsing errors and warnings
+- [ ] Add support for Self-Call message
+- [ ] Attach rendering properties to diagram model, such as width and height
+- [ ] Allow changing rendering properties to reflect on the diagram
+- [ ] Sample App - Add functionality to update rendering properties
+- [ ] Client side library to handle diagram updates after rendering
+- [ ] Actor stereotypes display in the diagram
+- [ ] Add the notes to the rendering of the actors and messages
+

@@ -141,7 +141,9 @@
                 console.log(diagramType);
                 console.log(diagramModel);
                 diagramModel = JSON.parse(diagramModel); 
-                var u2s = new uml2svg.Uml2svg(diagramType, 
+                var u2s = new uml2svg.Uml2svg(
+                    diagramModel,
+                    diagramType, 
                     { 
                         width:640,
                         height:480 /*,
@@ -154,7 +156,7 @@
                             verticalSpacing: 100
                         }*/
                         });
-                var svg = u2s.render(diagramModel);
+                var svg = u2s.render();
                 $("#output").html(svg);
             });
         });

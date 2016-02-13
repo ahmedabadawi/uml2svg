@@ -8,7 +8,6 @@ uml2svg.renderer = uml2svg.renderer || {};
 uml2svg.renderer.SequenceDiagram = function(parent, options) {
     this.options = options;
     this.parent = parent;
-
 };
 
 uml2svg.renderer.SequenceDiagram.prototype.render = function(diagramModel) {
