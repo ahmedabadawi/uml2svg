@@ -35,10 +35,10 @@ for example *SequenceDiagram*, the diagramText denotes the text valid for the
     separate section for the options, see below.
 
 ```javascript
-var parser = new uml2svg.parser['diagramType']();
-var diagramModel = parser.parse('diagramText', svgElementId);
-var renderer = new uml2svg.Uml2svg('diagramType', options);
-var svg = renderer.render(diagramModel);
+var diagram = new uml2svg.Uml2svg('diagramType', options);
+diagram.addParseErrorHandler(function(error) { });
+diagram.init('diagramText');
+var svg = diagram.render();
 // use the svg to inject it into the DOM
 ```
 
@@ -141,7 +141,7 @@ Object B<-A: Response
 - [X] Merge the parser into the uml2svg.Uml2svg class to encapsulate the parsing and
   rendering behind the same interface
 - [ ] Expose the diagram model to the client
-- [ ] Allow attaching events tp the diagram model
+- [ ] Allow attaching events to the diagram model
 - [X] Expose parsing errors and warnings (line#, line text, and error/warning)
 - [ ] Sample App - Add clear functionality
 - [X] Sample App - Show parsing errors and warnings
