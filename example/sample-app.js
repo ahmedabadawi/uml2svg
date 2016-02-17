@@ -9,7 +9,7 @@ $(function() {
         try {
             //var diagramModel = parser.parse($diagramText.val(), "diagram");        
             // TODO: Handle parsing errors with sticky message showing errors
-            var diagram = new uml2svg.Uml2svg(
+            var diagram = new uml2svg.UmlDiagram(
                                 $diagramType.val(), 
                                 {   width:640,
                                     height:480 });
