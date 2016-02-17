@@ -5,9 +5,9 @@ uml2svg.renderer = uml2svg.renderer || {};
 // sequencediagram class is a singleton defined on the namespace of
 // uml2svg.renderer to be used by the Uml2svg class proxy to generate the SVG
 // element 
-uml2svg.renderer.SequenceDiagram = function(parent, options) {
+uml2svg.renderer.SequenceDiagram = function(svgHelper, options) {
     this.options = options;
-    this.parent = parent;
+    this.svgHelper = svgHelper;
 };
 
 uml2svg.renderer.SequenceDiagram.prototype.render = function(diagramModel) {
@@ -17,7 +17,7 @@ uml2svg.renderer.SequenceDiagram.prototype.render = function(diagramModel) {
         var actorElements = this.renderActors();
 
         var diagramElements = 
-            this.parent.renderSvg(diagramModel.id, 
+            this.svgHelper.renderSvg(diagramModel.id, 
                                 this.renderDefs(),  
                                 this.renderActors() + 
                                 this.renderMessages());
@@ -57,8 +57,8 @@ uml2svg.renderer.SequenceDiagram.prototype.validate = function() {
 };
     
 uml2svg.renderer.SequenceDiagram.prototype.renderDefs = function() {
-    var arrowMarker = this.parent.renderArrowMarker();
-    var defs = this.parent.renderDefs(arrowMarker);
+    var arrowMarker = this.svgHelper.renderArrowMarker();
+    var defs = this.svgHelper.renderDefs(arrowMarker);
         
     return defs;
 };
@@ -91,11 +91,11 @@ uml2svg.renderer.SequenceDiagram.prototype.renderActor =
 
     // Render actor upper box
     var actorUpperBox =
-        this.parent.renderRect(x, upperY, width, height);
+        this.svgHelper.renderRect(x, upperY, width, height);
         
     // Render actor lower box
     var actorLowerBox = 
-        this.parent.renderRect(x, lowerY, width, height);
+        this.svgHelper.renderRect(x, lowerY, width, height);
         
     // Render actor lifetime line
     var lifetimeLineX = offsetX;
@@ -103,16 +103,16 @@ uml2svg.renderer.SequenceDiagram.prototype.renderActor =
     var lifetimeLineYEnd = lowerY;
 
     var actorLifetimeLine = 
-        this.parent.renderDashedVerticalLine(
+        this.svgHelper.renderDashedVerticalLine(
             lifetimeLineX, lifetimeLineYStart, lifetimeLineYEnd);
         
     // Render actor title
     var textX = x + (width / 2);
     var actorUpperTitle = 
-        this.parent.renderText(textX, upperY, width, height, actor.title);
+        this.svgHelper.renderText(textX, upperY, width, height, actor.title);
         
     var actorLowerTitle = 
-        this.parent.renderText(textX, lowerY, width, height, actor.title);
+        this.svgHelper.renderText(textX, lowerY, width, height, actor.title);
         
     // Attach the bounding box to the actor
     actor.box = {
@@ -170,7 +170,7 @@ uml2svg.renderer.SequenceDiagram.prototype.renderMessage = function(message, off
     var width = Math.abs(arrowStartX - arrowEndX);
 
     var arrowElement =
-        this.parent.renderArrow(
+        this.svgHelper.renderArrow(
             arrowStartX, offsetY, arrowEndX, offsetY,
             (message.type === 'response'));
         
@@ -184,7 +184,7 @@ uml2svg.renderer.SequenceDiagram.prototype.renderMessage = function(message, off
     textY -= 5;     // HACK: move it to be over the line
 
     var textElement =
-        this.parent.renderTextXY(
+        this.svgHelper.renderTextXY(
             textX, textY, message.message);
        
     return arrowElement + 
